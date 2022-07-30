@@ -5,11 +5,11 @@ import (
 )
 
 // InitRouting routesの初期化
-func InitRouting(e *echo.Echo, taskHandler TaskHandler) {
+func InitRouting(e *echo.Echo, userHandler UserHandler) {
 
-	e.POST("/task", taskHandler.Post())
-	e.GET("/task/:id", taskHandler.Get())
-	e.PUT("/task/:id", taskHandler.Put())
-	e.DELETE("/task/:id", taskHandler.Delete())
+	e.POST("/User", userHandler.Post())
+	e.GET("/User/:id", userHandler.Get())
+	e.PUT("/User/:id", userHandler.Put())
+	e.DELETE("/User/:id", userHandler.Delete())
 
 }

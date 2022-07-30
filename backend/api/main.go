@@ -11,11 +11,11 @@ import (
 )
 
 func main() {
-	taskRepository := infra.NewTaskRepository(config.NewDB())
-	taskUsecase := usecase.NewTaskUsecase(taskRepository)
-	taskHandler := handler.NewTaskHandler(taskUsecase)
+	userRepository := infra.NewUserRepository(config.NewDB())
+	userUsecase := usecase.NewUserUsecase(userRepository)
+	userHandler := handler.NewUserHandler(userUsecase)
 
 	e := echo.New()
-	handler.InitRouting(e, taskHandler)
+	handler.InitRouting(e, userHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }
