@@ -15,10 +15,10 @@ func NewDB() *gorm.DB {
 	mysqlHost := os.Getenv("MYSQL_HOST")
 	mysqlDatabase := os.Getenv("MYSQL_DATABASE")
 
-	fmt.Println(mysqlUser)
-
 	connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPwd, mysqlHost, mysqlDatabase)
 	db, err := gorm.Open("mysql", connStr)
+
+	// db, err := gorm.Open("mysql", "user:password@tcp(sample_db)/sample?charset=utf8mb4&parseTime=True&loc=Local")
 
 	if err != nil {
 		panic(err)
