@@ -17,8 +17,11 @@ func main() {
 	channelRepository := infra.NewChannelRepository(config.NewDB())
 	channelUsecase := usecase.NewChannelUsecase(channelRepository)
 	channelHandler := handler.NewChannelHandler(channelUsecase)
+	messageRepository := infra.NewMessageRepository(config.NewDB())
+	messageUsecase := usecase.NewMessageUsecase(messageRepository)
+	messageHandler := handler.NewMessageHandler(messageUsecase)
 
 	e := echo.New()
-	handler.InitRouting(e, userHandler, channelHandler)
+	handler.InitRouting(e, userHandler, channelHandler, messageHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }

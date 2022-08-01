@@ -24,6 +24,7 @@ func NewDB() *gorm.DB {
 
 	db.AutoMigrate(model.User{})
 	db.AutoMigrate(model.Channel{})
+	db.AutoMigrate(model.Message{})
 
 	return db
 }

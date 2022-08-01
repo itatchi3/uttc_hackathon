@@ -10,7 +10,8 @@ import (
 type Channel struct {
 	gorm.Model
 
-	Name string
+	Name     string
+	Messages []Message
 }
 
 // NewChannel channelのコンストラクタ

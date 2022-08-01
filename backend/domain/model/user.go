@@ -14,6 +14,7 @@ type User struct {
 	Email      string
 	Password   string
 	ProfileURL string
+	Messages   []Message
 }
 
 // NewUser userのコンストラクタ
