@@ -8,6 +8,7 @@ import (
 type ChannelRepository interface {
 	Create(Channel *model.Channel) (*model.Channel, error)
 	FindByID(id uint) (*model.Channel, error)
+	FindAll() (*[]model.Channel, error)
 	Update(Channel *model.Channel) (*model.Channel, error)
 	Delete(Channel *model.Channel) error
 }

@@ -13,6 +13,7 @@ func InitRouting(e *echo.Echo, userHandler UserHandler, channelHandler ChannelHa
 	e.DELETE("/User/:id", userHandler.Delete())
 	e.POST("/Channel", channelHandler.Post())
 	e.GET("/Channel/:id", channelHandler.Get())
+	e.GET("/Channel", channelHandler.GetAll())
 	e.PUT("/Channel/:id", channelHandler.Put())
 	e.DELETE("/Channel/:id", channelHandler.Delete())
 	e.POST("/Message", messageHandler.Post())

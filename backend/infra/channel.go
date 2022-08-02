@@ -36,6 +36,17 @@ func (tr *channelRepository) FindByID(id uint) (*model.Channel, error) {
 	return Channel, nil
 }
 
+// FindAll channelをすべて取得
+func (tr *channelRepository) FindAll() (*[]model.Channel, error) {
+	Channels := &[]model.Channel{}
+
+	if err := tr.Conn.Find(&Channels).Error; err != nil {
+		return nil, err
+	}
+
+	return Channels, nil
+}
+
 // Update channelの更新
 func (tr *channelRepository) Update(Channel *model.Channel) (*model.Channel, error) {
 	if err := tr.Conn.Model(&Channel).Update(&Channel).Error; err != nil {
