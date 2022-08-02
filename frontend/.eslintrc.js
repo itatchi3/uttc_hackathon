@@ -1,5 +1,5 @@
 module.exports = {
-  parserOptions: { project: "./frontend/tsconfig.json" },
+  parserOptions: { project: "./tsconfig.json" },
   plugins: [
     "simple-import-sort",
     "unused-imports",
@@ -87,7 +87,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["src/pages/**/*.tsx", "src/pages/api/**/*.ts", "next.config.js"],
+      files: ["src/pages/**/*.tsx", "src/pages/api/**/*.ts", "next.config.mjs"],
       rules: {
         /* sort 系 */
         // pages コンポーネントのデフォルトエクスポートを許可
