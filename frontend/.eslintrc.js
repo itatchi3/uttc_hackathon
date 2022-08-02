@@ -10,7 +10,6 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
     "prettier",
-    "next/babel",
   ],
   rules: {
     // ブロックの中括弧（{}）を省略しない
