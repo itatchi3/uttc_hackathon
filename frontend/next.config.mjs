@@ -2,7 +2,9 @@
  * @type {import('next').NextConfig}
  **/
 const nextConfig = {
-  output: "standalone",
+  experimental: {
+    outputStandalone: true,
+  },
   swcMinify: true,
   reactStrictMode: true,
   poweredByHeader: false,
