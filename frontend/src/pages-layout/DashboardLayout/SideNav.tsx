@@ -3,21 +3,16 @@ import {
   Group,
   MediaQuery,
   Navbar,
+  ScrollArea,
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import Link from "next/link";
 import type { FC } from "react";
+import { useGetChannelsQuery } from "src/lib/channel";
 import { getPath } from "src/lib/const";
 import { ActiveLink } from "src/lib/next";
-import {
-  ArrowLeft,
-  ArrowRight,
-  DeviceAnalytics,
-  Home,
-  Settings,
-} from "tabler-icons-react";
+import { ArrowLeft, ArrowRight, DeviceAnalytics } from "tabler-icons-react";
 
 const useStyles = createStyles<string, { collapsed?: boolean }>(
   (theme, params, getRef) => {
@@ -33,7 +28,6 @@ const useStyles = createStyles<string, { collapsed?: boolean }>(
 
       header: {
         paddingBottom: theme.spacing.xs,
-        marginBottom: theme.spacing.md,
         borderBottom: `1px solid ${theme.colors.gray[2]}`,
       },
 
@@ -44,8 +38,6 @@ const useStyles = createStyles<string, { collapsed?: boolean }>(
       },
 
       logo: {
-        ...theme.fn.focusStyles(),
-        width: "100%",
         display: "flex",
         alignItems: "center",
         columnGap: theme.spacing.sm,
@@ -53,7 +45,6 @@ const useStyles = createStyles<string, { collapsed?: boolean }>(
         fontSize: theme.fontSizes.sm,
         color: theme.colors.gray[7],
         padding: `${theme.spacing.xs}px ${theme.spacing.sm}px`,
-        borderRadius: theme.radius.sm,
         fontWeight: 700,
       },
 
@@ -93,6 +84,8 @@ const useStyles = createStyles<string, { collapsed?: boolean }>(
       linkIcon: {
         ref: icon,
         color: theme.colors.gray[6],
+        textAlign: "center",
+        margin: params?.collapsed ? "0 auto" : "0",
       },
 
       linkLabel: params?.collapsed ? { display: "none" } : {},
@@ -100,54 +93,54 @@ const useStyles = createStyles<string, { collapsed?: boolean }>(
   }
 );
 
-const ITEMS = [
-  { href: getPath("INDEX"), label: "ホーム", Icon: Home },
-  { href: getPath("SETTINGS"), label: "設定", Icon: Settings },
-];
-
 /** @package */
 export const SideNav: FC<{ className?: string }> = ({ className }) => {
   const [collapsed, handlers] = useDisclosure(false);
   const { classes, cx } = useStyles({ collapsed });
+  const items = useGetChannelsQuery();
 
   return (
     <Navbar p="md" className={cx(classes.navbar, className)}>
-      <Navbar.Section grow>
-        <Group className={classes.header} position="apart">
-          <Link href={getPath("INDEX")}>
-            <a className={classes.logo}>
+      <Navbar.Section mb="md">
+        {
+          <Group className={classes.header} position="apart">
+            <div className={classes.logo}>
               <DeviceAnalytics />
-              <span className={classes.linkLabel}>Admin Dashboard</span>
-            </a>
-          </Link>
-        </Group>
-        {ITEMS.map(({ Icon, href, label }) => {
-          return (
-            <Tooltip
-              key={label}
-              label={label}
-              disabled={!collapsed}
-              position="right"
-              withArrow
-              sx={{ width: "100%" }}
-            >
-              <ActiveLink href={href} passHref>
-                {(isActive) => {
-                  return (
-                    <a
-                      className={cx(classes.link, {
-                        [classes.linkActive]: isActive,
-                      })}
-                    >
-                      <Icon className={classes.linkIcon} />
-                      <span className={classes.linkLabel}>{label}</span>
-                    </a>
-                  );
-                }}
-              </ActiveLink>
-            </Tooltip>
-          );
-        })}
+              <span className={classes.linkLabel}>UTTC Hackthon</span>
+            </div>
+          </Group>
+        }
+      </Navbar.Section>
+
+      <Navbar.Section grow component={ScrollArea}>
+        {items.data &&
+          items.data.map(({ id, name }, index) => {
+            return (
+              <Tooltip
+                key={id}
+                label={name}
+                disabled={!collapsed}
+                position="right"
+                withArrow
+                sx={{ width: "100%" }}
+              >
+                <ActiveLink href={getPath("CHANNEL", String(id))} passHref>
+                  {(isActive) => {
+                    return (
+                      <a
+                        className={cx(classes.link, {
+                          [classes.linkActive]: isActive,
+                        })}
+                      >
+                        <span className={classes.linkIcon}>#{index}</span>
+                        <span className={classes.linkLabel}>{name}</span>
+                      </a>
+                    );
+                  }}
+                </ActiveLink>
+              </Tooltip>
+            );
+          })}
       </Navbar.Section>
 
       <MediaQuery smallerThan="sm" styles={{ display: "none" }}>

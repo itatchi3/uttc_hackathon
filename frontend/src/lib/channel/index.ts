@@ -1,0 +1,1 @@
+export { useGetChannelsQuery } from "./query";
