@@ -1,0 +1,1 @@
+export { useGetMessagesQuery } from "./query";
