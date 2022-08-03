@@ -8,6 +8,7 @@ import (
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
@@ -22,6 +23,10 @@ func main() {
 	messageHandler := handler.NewMessageHandler(messageUsecase)
 
 	e := echo.New()
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 	handler.InitRouting(e, userHandler, channelHandler, messageHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }
