@@ -11,9 +11,7 @@ axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 const fetchChannels = async (): Promise<Channels> => {
-  const response = await axios.get(
-    "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app/Channel"
-  );
+  const response = await axios.get(process.env.API_PATH);
   return response.data;
 };
 
