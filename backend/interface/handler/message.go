@@ -38,7 +38,6 @@ type responseMessage struct {
 	ID        uint      `json:"id"`
 	Text      string    `json:"text"`
 	UserID    uint      `json:"user_id"`
-	ChannelID uint      `json:"channel_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -47,7 +46,6 @@ type responseGetMessage struct {
 	ID        uint   `json:"id"`
 	Text      string `json:"text"`
 	User      UserInMessagge
-	ChannelID uint      `json:"channel_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -77,7 +75,6 @@ func (th *messageHandler) Post() echo.HandlerFunc {
 			ID:        createdMessage.ID,
 			Text:      createdMessage.Text,
 			UserID:    createdMessage.UserID,
-			ChannelID: createdMessage.ChannelID,
 			CreatedAt: createdMessage.CreatedAt,
 			UpdatedAt: createdMessage.UpdatedAt,
 		}
@@ -107,7 +104,6 @@ func (th *messageHandler) Get() echo.HandlerFunc {
 				Name:       foundMessage.User.Name,
 				ProfileURL: foundMessage.User.ProfileURL,
 			},
-			ChannelID: foundMessage.ChannelID,
 			CreatedAt: foundMessage.CreatedAt,
 			UpdatedAt: foundMessage.UpdatedAt,
 		}
@@ -141,7 +137,6 @@ func (th *messageHandler) GetByChannelID() echo.HandlerFunc {
 					Name:       (*foundMessages)[i].User.Name,
 					ProfileURL: (*foundMessages)[i].User.ProfileURL,
 				},
-				ChannelID: (*foundMessages)[i].ChannelID,
 				CreatedAt: (*foundMessages)[i].CreatedAt,
 				UpdatedAt: (*foundMessages)[i].UpdatedAt,
 			})
@@ -170,10 +165,9 @@ func (th *messageHandler) Put() echo.HandlerFunc {
 		}
 
 		res := responseMessage{
-			ID:        updatedMessage.ID,
-			Text:      updatedMessage.Text,
-			UserID:    updatedMessage.UserID,
-			ChannelID: updatedMessage.ChannelID,
+			ID:     updatedMessage.ID,
+			Text:   updatedMessage.Text,
+			UserID: updatedMessage.UserID,
 		}
 
 		return c.JSON(http.StatusOK, res)
