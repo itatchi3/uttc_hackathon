@@ -9,6 +9,7 @@ import (
 type MessageUsecase interface {
 	Create(text string, userID, channelID uint) (*model.Message, error)
 	FindByID(id uint) (*model.Message, error)
+	FindByChannelID(channelID uint) (*[]model.Message, error)
 	Update(text string, id, userID, channelID uint) (*model.Message, error)
 	Delete(id uint) error
 }
@@ -45,6 +46,16 @@ func (uu *messageUsecase) FindByID(id uint) (*model.Message, error) {
 	}
 
 	return foundMessage, nil
+}
+
+// FindByChannelID messageをChannelIDですべて取得するときのユースケース
+func (uu *messageUsecase) FindByChannelID(channelID uint) (*[]model.Message, error) {
+	foundMessages, err := uu.messageRepo.FindByChannelID(channelID)
+	if err != nil {
+		return nil, err
+	}
+
+	return foundMessages, nil
 }
 
 // Update messageを更新するときのユースケース

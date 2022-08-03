@@ -29,11 +29,22 @@ func (tr *messageRepository) Create(Message *model.Message) (*model.Message, err
 func (tr *messageRepository) FindByID(id uint) (*model.Message, error) {
 	Message := &model.Message{Model: gorm.Model{ID: id}}
 
-	if err := tr.Conn.First(&Message).Error; err != nil {
+	if err := tr.Conn.Preload("User").First(&Message).Error; err != nil {
 		return nil, err
 	}
 
 	return Message, nil
+}
+
+// FindByChannelID messageをChannelIDですべて取得
+func (tr *messageRepository) FindByChannelID(channelID uint) (*[]model.Message, error) {
+	Messages := &[]model.Message{}
+
+	if err := tr.Conn.Where("channel_id = ?", channelID).Preload("User").Find(&Messages).Error; err != nil {
+		return nil, err
+	}
+
+	return Messages, nil
 }
 
 // Update messageの更新

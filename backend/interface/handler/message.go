@@ -13,6 +13,7 @@ import (
 type MessageHandler interface {
 	Post() echo.HandlerFunc
 	Get() echo.HandlerFunc
+	GetByChannelID() echo.HandlerFunc
 	Put() echo.HandlerFunc
 	Delete() echo.HandlerFunc
 }
@@ -38,6 +39,21 @@ type responseMessage struct {
 	UserID    uint   `json:"user_id"`
 	ChannelID uint   `json:"channel_id"`
 }
+
+type responseGetMessage struct {
+	ID        uint   `json:"id"`
+	Text      string `json:"text"`
+	User      UserInMessagge
+	ChannelID uint `json:"channel_id"`
+}
+
+type UserInMessagge struct {
+	ID         uint   `json:"id"`
+	Name       string `json:"name"`
+	ProfileURL string `json:"image_url"`
+}
+
+type responseGetMessages []responseGetMessage
 
 // Post messageを保存するときのハンドラー
 func (th *messageHandler) Post() echo.HandlerFunc {
@@ -76,11 +92,48 @@ func (th *messageHandler) Get() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		res := responseMessage{
-			ID:        foundMessage.ID,
-			Text:      foundMessage.Text,
-			UserID:    foundMessage.UserID,
+		res := responseGetMessage{
+			ID:   foundMessage.ID,
+			Text: foundMessage.Text,
+			User: UserInMessagge{
+				ID:         foundMessage.User.ID,
+				Name:       foundMessage.User.Name,
+				ProfileURL: foundMessage.User.ProfileURL,
+			},
 			ChannelID: foundMessage.ChannelID,
+		}
+
+		return c.JSON(http.StatusOK, res)
+	}
+}
+
+// Get messageを取得するときのハンドラー
+func (th *messageHandler) GetByChannelID() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		channelID, err := strconv.ParseUint(c.Param("channelID"), 10, 64)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		foundMessages, err := th.messageUsecase.FindByChannelID(uint(channelID))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		var res responseGetMessages
+		// 不定長のデータ構造をつける。
+		for i := 0; i < len(*foundMessages); i++ {
+			//fmt.Println(i)
+			res = append(res, responseGetMessage{
+				ID:   (*foundMessages)[i].ID,
+				Text: (*foundMessages)[i].Text,
+				User: UserInMessagge{
+					ID:         (*foundMessages)[i].User.ID,
+					Name:       (*foundMessages)[i].User.Name,
+					ProfileURL: (*foundMessages)[i].User.ProfileURL,
+				},
+				ChannelID: (*foundMessages)[i].ChannelID,
+			})
 		}
 
 		return c.JSON(http.StatusOK, res)
