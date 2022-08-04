@@ -23,10 +23,7 @@ func main() {
 	messageHandler := handler.NewMessageHandler(messageUsecase)
 
 	e := echo.New()
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	}))
+	e.Use(middleware.CORS())
 	handler.InitRouting(e, userHandler, channelHandler, messageHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }
