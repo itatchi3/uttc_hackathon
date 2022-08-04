@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 type Message = {
@@ -17,9 +17,6 @@ type User = {
 
 type Messages = ReadonlyArray<Message>;
 
-axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
-axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-
 const fetchMessages = async (channelId: string): Promise<Messages> => {
   const response = await axios.get(
     process.env.NEXT_PUBLIC_API_PATH + "/Messages/" + channelId
@@ -31,4 +28,22 @@ export const useGetMessagesQuery = (channelId: string) => {
   return useQuery(["messages", channelId], () => {
     return fetchMessages(channelId);
   });
+};
+
+export const useAddMessage = (channelId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (newComment: { text: string; user_id: number; channel_id: number }) => {
+      return axios.post(
+        process.env.NEXT_PUBLIC_API_PATH + "/Message",
+        newComment
+      );
+    },
+    {
+      onSuccess: () => {
+        return queryClient.invalidateQueries(["messages", channelId]);
+      },
+    }
+  );
 };
