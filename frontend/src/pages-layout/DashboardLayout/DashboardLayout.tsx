@@ -33,10 +33,10 @@ export const DashboardLayout: CustomLayout = (page) => {
   return (
     <AppShell
       padding="md"
-      styles={(theme) => {
+      styles={() => {
         return {
           body: { minHeight: "100vh" },
-          main: { padding: 0, backgroundColor: theme.colors.gray[0] },
+          main: { padding: 0 },
         };
       }}
       navbar={

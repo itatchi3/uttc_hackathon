@@ -1,19 +1,20 @@
 import {
   ActionIcon,
-  Autocomplete,
   Avatar,
   Box,
   Divider,
   Group,
   Indicator,
   Menu,
+  Title,
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import type { FC, ReactNode } from "react";
+import { useGetChannelQuery } from "src/lib/channel/query";
 import { getPath } from "src/lib/const";
-import { Bell, Logout, Search, Settings } from "tabler-icons-react";
+import { Bell, Logout, Settings } from "tabler-icons-react";
 
 /** @package */
 export const Header: FC<{ left: ReactNode }> = ({ left }) => {
@@ -30,7 +31,7 @@ export const Header: FC<{ left: ReactNode }> = ({ left }) => {
     >
       <Group spacing="lg" noWrap>
         {left}
-        <SearchForm />
+        <ChannelName />
         <Notification />
         <UserMenu />
       </Group>
@@ -38,21 +39,30 @@ export const Header: FC<{ left: ReactNode }> = ({ left }) => {
   );
 };
 
-const SearchForm: FC = () => {
+// const SearchForm: FC = () => {
+//   return (
+//     <Autocomplete
+//       data={[]}
+//       size="lg"
+//       placeholder="Search"
+//       icon={<Search size={18} />}
+//       styles={{
+//         root: { flexGrow: 1 },
+//         input: { border: 0, backgroundColor: "transparent" },
+//       }}
+//       onChange={(value) => {
+//         console.info(value);
+//       }}
+//     />
+//   );
+// };
+
+const ChannelName: FC = () => {
+  const channel = useGetChannelQuery("1");
   return (
-    <Autocomplete
-      data={[]}
-      size="lg"
-      placeholder="Search"
-      icon={<Search size={18} />}
-      styles={{
-        root: { flexGrow: 1 },
-        input: { border: 0, backgroundColor: "transparent" },
-      }}
-      onChange={(value) => {
-        console.info(value);
-      }}
-    />
+    <Box sx={{ width: "100%" }}>
+      <Title order={1}>{channel.data && channel.data.name}</Title>
+    </Box>
   );
 };
 

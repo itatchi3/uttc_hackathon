@@ -7,9 +7,6 @@ type Channel = {
 };
 type Channels = ReadonlyArray<Channel>;
 
-axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
-axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-
 const fetchChannels = async (): Promise<Channels> => {
   const response = await axios.get(
     process.env.NEXT_PUBLIC_API_PATH + "/Channel"
@@ -20,5 +17,18 @@ const fetchChannels = async (): Promise<Channels> => {
 export const useGetChannelsQuery = () => {
   return useQuery(["channels"], () => {
     return fetchChannels();
+  });
+};
+
+const fetchChannel = async (channelId: string): Promise<Channel> => {
+  const response = await axios.get(
+    process.env.NEXT_PUBLIC_API_PATH + "/Channel/" + channelId
+  );
+  return response.data;
+};
+
+export const useGetChannelQuery = (channelId: string) => {
+  return useQuery(["channel", channelId], () => {
+    return fetchChannel(channelId);
   });
 };
