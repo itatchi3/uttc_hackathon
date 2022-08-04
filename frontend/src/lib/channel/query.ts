@@ -11,7 +11,9 @@ axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 const fetchChannels = async (): Promise<Channels> => {
-  const response = await axios.get(process.env.API_PATH);
+  const response = await axios.get(
+    process.env.NEXT_PUBLIC_API_PATH + "/Channel"
+  );
   return response.data;
 };
 

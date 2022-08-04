@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { useGetMessagesQuery } from "src/lib/message";
 
 type Props = {
   channelId: string;
@@ -6,5 +7,17 @@ type Props = {
 
 /** @package */
 export const Channel: FC<Props> = ({ channelId }) => {
-  return <p>{channelId}</p>;
+  const messsges = useGetMessagesQuery(channelId);
+
+  return (
+    <>
+      {messsges.data && (
+        <ul>
+          {messsges.data.map((message) => {
+            return <li key={message.id}>{message.text}</li>;
+          })}
+        </ul>
+      )}
+    </>
+  );
 };

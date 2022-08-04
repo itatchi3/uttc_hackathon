@@ -22,7 +22,7 @@ axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 const fetchMessages = async (channelId: string): Promise<Messages> => {
   const response = await axios.get(
-    process.env.API_PATH + "/Messages/" + channelId
+    process.env.NEXT_PUBLIC_API_PATH + "/Messages/" + channelId
   );
   return response.data;
 };
