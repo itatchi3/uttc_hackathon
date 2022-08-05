@@ -13,6 +13,7 @@ import (
 type UserHandler interface {
 	Post() echo.HandlerFunc
 	Get() echo.HandlerFunc
+	GetAll() echo.HandlerFunc
 	Put() echo.HandlerFunc
 	Delete() echo.HandlerFunc
 }
@@ -40,6 +41,8 @@ type responseUser struct {
 	Password   string `json:"password"`
 	ProfileURL string `json:"profile_url"`
 }
+
+type responseUsers []responseUser
 
 // Post userを保存するときのハンドラー
 func (th *userHandler) Post() echo.HandlerFunc {
@@ -82,9 +85,30 @@ func (th *userHandler) Get() echo.HandlerFunc {
 		res := responseUser{
 			ID:         foundUser.ID,
 			Name:       foundUser.Name,
-			Email:      foundUser.Email,
-			Password:   foundUser.Password,
 			ProfileURL: foundUser.ProfileURL,
+		}
+
+		return c.JSON(http.StatusOK, res)
+	}
+}
+
+// Get userをすべて取得するときのハンドラー
+func (th *userHandler) GetAll() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		foundUsers, err := th.userUsecase.FindAll()
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		var res responseUsers
+		// 不定長のデータ構造をつける。
+		for i := 0; i < len(*foundUsers); i++ {
+			//fmt.Println(i)
+			res = append(res, responseUser{
+				ID:         (*foundUsers)[i].ID,
+				Name:       (*foundUsers)[i].Name,
+				ProfileURL: (*foundUsers)[i].ProfileURL,
+			})
 		}
 
 		return c.JSON(http.StatusOK, res)

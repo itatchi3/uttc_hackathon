@@ -36,6 +36,17 @@ func (tr *userRepository) FindByID(id uint) (*model.User, error) {
 	return User, nil
 }
 
+// FindAll userをすべて取得
+func (tr *userRepository) FindAll() (*[]model.User, error) {
+	Users := &[]model.User{}
+
+	if err := tr.Conn.Find(&Users).Error; err != nil {
+		return nil, err
+	}
+
+	return Users, nil
+}
+
 // Update userの更新
 func (tr *userRepository) Update(User *model.User) (*model.User, error) {
 	if err := tr.Conn.Model(&User).Update(&User).Error; err != nil {
