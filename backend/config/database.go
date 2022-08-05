@@ -18,11 +18,15 @@ func NewDB() *gorm.DB {
 	connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPwd, mysqlHost, mysqlDatabase)
 	db, err := gorm.Open("mysql", connStr)
 
+	// db, err := gorm.Open("mysql", "user:password@tcp(hackathon_backend_db)/sample?charset=utf8mb4&parseTime=True&loc=Local")
+
 	if err != nil {
 		panic(err)
 	}
 
-	db.AutoMigrate(model.Task{})
+	db.AutoMigrate(model.User{})
+	db.AutoMigrate(model.Channel{})
+	db.AutoMigrate(model.Message{})
 
 	return db
 }
