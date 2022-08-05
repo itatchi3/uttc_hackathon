@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-type Channel = {
+export type Channel = {
   id: number;
   name: string;
 };
