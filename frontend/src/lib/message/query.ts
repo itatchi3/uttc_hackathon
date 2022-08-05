@@ -24,12 +24,14 @@ const fetchMessages = async (channelId: string): Promise<Messages> => {
   return response.data;
 };
 
+/** @package */
 export const useGetMessagesQuery = (channelId: string) => {
   return useQuery(["messages", channelId], () => {
     return fetchMessages(channelId);
   });
 };
 
+/** @package */
 export const useAddMessageQuery = (channelId: string) => {
   const queryClient = useQueryClient();
 
@@ -48,6 +50,7 @@ export const useAddMessageQuery = (channelId: string) => {
   );
 };
 
+/** @package */
 export const useUpdateMessageQuery = (channelId: string) => {
   const queryClient = useQueryClient();
 
@@ -75,6 +78,7 @@ export const useUpdateMessageQuery = (channelId: string) => {
   );
 };
 
+/** @package */
 export const useDeleteMessageQuery = (channelId: string) => {
   const queryClient = useQueryClient();
 

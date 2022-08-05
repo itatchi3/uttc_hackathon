@@ -14,6 +14,7 @@ const fetchChannels = async (): Promise<Channels> => {
   return response.data;
 };
 
+/** @package */
 export const useGetChannelsQuery = () => {
   return useQuery(["channels"], () => {
     return fetchChannels();
@@ -27,6 +28,7 @@ const fetchChannel = async (channelId: string): Promise<Channel> => {
   return response.data;
 };
 
+/** @package */
 export const useGetChannelQuery = (channelId: string) => {
   return useQuery(["channel", channelId], () => {
     return fetchChannel(channelId);
