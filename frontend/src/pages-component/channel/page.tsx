@@ -115,7 +115,7 @@ export const Channel: FC<Props> = ({ channelId }) => {
   //   scrollBottomRef?.current?.scrollIntoView();
   // }, [messages.isFetched]);
 
-  return messages.data ? (
+  return messages.data !== undefined ? (
     <Stack justify="space-between">
       <Box
         sx={{
@@ -123,192 +123,195 @@ export const Channel: FC<Props> = ({ channelId }) => {
           overflowY: "scroll",
         }}
       >
-        {messages.data.map((message, index) => {
-          return (
-            <Box key={message.id}>
-              <Box
-                p="sm"
-                sx={{
-                  borderTop: "1px solid #e6e6e6",
-                  borderLeft: "1px solid #e6e6e6",
-                  borderRight: "1px solid #e6e6e6",
-                  borderBottom:
-                    index === messages.data.length - 1
-                      ? "1px solid #e6e6e6"
-                      : "none",
-                }}
-              >
-                <Group position="apart">
-                  <Group>
-                    <Avatar
-                      src={message.User.image_url}
-                      alt={message.User.name}
-                      radius="xl"
-                    />
-                    <div>
-                      <Text size="sm" weight={700}>
-                        {message.User.name}
-                      </Text>
-                      <Text size="xs" color="dimmed">
-                        {dayjs(message.created_at).format(
-                          "YYYY-MM-DD HH:mm:ss"
+        {messages.data &&
+          messages.data.map((message, index) => {
+            return (
+              <Box key={message.id}>
+                <Box
+                  p="sm"
+                  sx={{
+                    borderTop: "1px solid #e6e6e6",
+                    borderLeft: "1px solid #e6e6e6",
+                    borderRight: "1px solid #e6e6e6",
+                    borderBottom:
+                      index === messages.data.length - 1
+                        ? "1px solid #e6e6e6"
+                        : "none",
+                  }}
+                >
+                  <Group position="apart">
+                    <Group>
+                      <Avatar
+                        src={message.User.image_url}
+                        alt={message.User.name}
+                        radius="xl"
+                      />
+                      <div>
+                        <Text size="sm" weight={700}>
+                          {message.User.name}
+                        </Text>
+                        <Text size="xs" color="dimmed">
+                          {dayjs(message.created_at).format(
+                            "YYYY-MM-DD HH:mm:ss"
+                          )}
+                        </Text>
+                      </div>
+                    </Group>
+                    {message.User.id === loginUser.id && (
+                      <Menu
+                        size="xs"
+                        position="bottom"
+                        placement="end"
+                        transition="pop-top-right"
+                        control={
+                          <ActionIcon variant="hover" radius="xl" size={20}>
+                            <DotsVertical radius="xl" />
+                          </ActionIcon>
+                        }
+                        styles={(theme) => {
+                          return {
+                            label: { fontSize: theme.fontSizes.sm },
+                            itemLabel: { fontSize: theme.fontSizes.md },
+                          };
+                        }}
+                      >
+                        <Menu.Item
+                          icon={<Edit size={16} />}
+                          onClick={() => {
+                            setEditingMessage({
+                              id: message.id,
+                              text: message.text,
+                            });
+                          }}
+                        >
+                          編集
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<Trash size={16} />}
+                          onClick={() => {
+                            setOpenedID(message.id);
+                          }}
+                        >
+                          削除
+                        </Menu.Item>
+                      </Menu>
+                    )}
+                  </Group>
+                  {editingMessage?.id !== message.id ? (
+                    <>
+                      <Text pt="sm" pl="54px" size="sm">
+                        {message.text}
+                        {message.created_at !== message.updated_at && (
+                          <span style={{ color: "gray" }}> (編集済み)</span>
                         )}
                       </Text>
-                    </div>
-                  </Group>
-                  {message.User.id === loginUser.id && (
-                    <Menu
-                      size="xs"
-                      position="bottom"
-                      placement="end"
-                      transition="pop-top-right"
-                      control={
-                        <ActionIcon variant="hover" radius="xl" size={20}>
-                          <DotsVertical radius="xl" />
-                        </ActionIcon>
-                      }
-                      styles={(theme) => {
-                        return {
-                          label: { fontSize: theme.fontSizes.sm },
-                          itemLabel: { fontSize: theme.fontSizes.md },
-                        };
-                      }}
-                    >
-                      <Menu.Item
-                        icon={<Edit size={16} />}
-                        onClick={() => {
-                          setEditingMessage({
+                    </>
+                  ) : (
+                    <>
+                      <Textarea
+                        pt="md"
+                        pl="54px"
+                        pr="24px"
+                        autosize
+                        maxRows={10}
+                        value={editingMessage.text}
+                        onChange={(e) => {
+                          return setEditingMessage({
                             id: message.id,
-                            text: message.text,
+                            text: e.target.value,
                           });
                         }}
-                      >
-                        編集
-                      </Menu.Item>
-                      <Menu.Item
-                        icon={<Trash size={16} />}
-                        onClick={() => {
-                          setOpenedID(message.id);
-                        }}
-                      >
-                        削除
-                      </Menu.Item>
-                    </Menu>
+                      />
+                      <Group position="right" pt="sm" pr="xl">
+                        <Button
+                          size="xs"
+                          color="gray"
+                          variant="outline"
+                          onClick={() => {
+                            return setEditingMessage(null);
+                          }}
+                        >
+                          キャンセル
+                        </Button>
+                        <Button
+                          size="xs"
+                          onClick={() => {
+                            return handleFinishEdit(
+                              editingMessage.id,
+                              message.text
+                            );
+                          }}
+                          loading={
+                            updateMessage.isLoading || messages.isLoading
+                          }
+                        >
+                          保存する
+                        </Button>
+                      </Group>
+                    </>
                   )}
-                </Group>
-                {editingMessage?.id !== message.id ? (
-                  <>
+                </Box>
+                <Modal
+                  opened={openedID === message.id}
+                  onClose={() => {
+                    return setOpenedID(null);
+                  }}
+                >
+                  <Group position="apart" mb="xs">
+                    <Text size="md" weight={500}>
+                      メッセージを削除する
+                    </Text>
+                  </Group>
+                  <Text color="dimmed" size="xs" mb="md">
+                    このメッセージを本当に削除しますか？削除後は元に戻すことはできません。
+                  </Text>
+                  <Box p="sm" mb="lg" sx={{ border: "1px solid #e6e6e6" }}>
+                    <Group>
+                      <Avatar
+                        src={message.User.image_url}
+                        alt={message.User.name}
+                        radius="xl"
+                      />
+                      <div>
+                        <Text size="sm" weight={700}>
+                          {message.User.name}
+                        </Text>
+                        <Text size="xs" color="dimmed">
+                          {message.created_at}
+                        </Text>
+                      </div>
+                    </Group>
                     <Text pt="sm" pl="54px" size="sm">
                       {message.text}
-                      {message.created_at !== message.updated_at && (
-                        <span style={{ color: "gray" }}> (編集済み)</span>
-                      )}
                     </Text>
-                  </>
-                ) : (
-                  <>
-                    <Textarea
-                      pt="md"
-                      pl="54px"
-                      pr="24px"
-                      autosize
-                      maxRows={10}
-                      value={editingMessage.text}
-                      onChange={(e) => {
-                        return setEditingMessage({
-                          id: message.id,
-                          text: e.target.value,
-                        });
+                  </Box>
+                  <Group position="right" mt="xs">
+                    <Button
+                      variant="outline"
+                      color="gray"
+                      size="xs"
+                      onClick={() => {
+                        setOpenedID(null);
                       }}
-                    />
-                    <Group position="right" pt="sm" pr="xl">
-                      <Button
-                        size="xs"
-                        color="gray"
-                        variant="outline"
-                        onClick={() => {
-                          return setEditingMessage(null);
-                        }}
-                      >
-                        キャンセル
-                      </Button>
-                      <Button
-                        size="xs"
-                        onClick={() => {
-                          return handleFinishEdit(
-                            editingMessage.id,
-                            message.text
-                          );
-                        }}
-                        loading={updateMessage.isLoading || messages.isLoading}
-                      >
-                        保存する
-                      </Button>
-                    </Group>
-                  </>
-                )}
-              </Box>
-              <Modal
-                opened={openedID === message.id}
-                onClose={() => {
-                  return setOpenedID(null);
-                }}
-              >
-                <Group position="apart" mb="xs">
-                  <Text size="md" weight={500}>
-                    メッセージを削除する
-                  </Text>
-                </Group>
-                <Text color="dimmed" size="xs" mb="md">
-                  このメッセージを本当に削除しますか？削除後は元に戻すことはできません。
-                </Text>
-                <Box p="sm" mb="lg" sx={{ border: "1px solid #e6e6e6" }}>
-                  <Group>
-                    <Avatar
-                      src={message.User.image_url}
-                      alt={message.User.name}
-                      radius="xl"
-                    />
-                    <div>
-                      <Text size="sm" weight={700}>
-                        {message.User.name}
-                      </Text>
-                      <Text size="xs" color="dimmed">
-                        {message.created_at}
-                      </Text>
-                    </div>
+                    >
+                      キャンセル
+                    </Button>
+                    <Button
+                      color="red"
+                      size="xs"
+                      onClick={async () => {
+                        await deleteMessage.mutateAsync(message.id);
+                        setOpenedID(null);
+                      }}
+                      loading={deleteMessage.isLoading}
+                    >
+                      削除する
+                    </Button>
                   </Group>
-                  <Text pt="sm" pl="54px" size="sm">
-                    {message.text}
-                  </Text>
-                </Box>
-                <Group position="right" mt="xs">
-                  <Button
-                    variant="outline"
-                    color="gray"
-                    size="xs"
-                    onClick={() => {
-                      setOpenedID(null);
-                    }}
-                  >
-                    キャンセル
-                  </Button>
-                  <Button
-                    color="red"
-                    size="xs"
-                    onClick={async () => {
-                      await deleteMessage.mutateAsync(message.id);
-                      setOpenedID(null);
-                    }}
-                    loading={deleteMessage.isLoading}
-                  >
-                    削除する
-                  </Button>
-                </Group>
-              </Modal>
-            </Box>
-          );
-        })}
+                </Modal>
+              </Box>
+            );
+          })}
         <div ref={scrollBottomRef} />
       </Box>
       <Box>
