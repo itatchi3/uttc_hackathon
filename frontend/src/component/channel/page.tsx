@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import dayjs from "dayjs";
 import type { FC } from "react";
+import { Fragment } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -102,6 +103,15 @@ export const Channel: FC<Props> = ({ channelId }) => {
     await deleteMessage.mutateAsync(id);
     await messages.refetch();
     setOpenedID(null);
+  };
+
+  const transformNewLine = (text: string) => {
+    const texts = text.split(/(\n)/).map((item, index) => {
+      return (
+        <Fragment key={index}>{item.match(/\n/) ? <br /> : item}</Fragment>
+      );
+    });
+    return texts;
   };
 
   useEffect(() => {
@@ -215,7 +225,7 @@ export const Channel: FC<Props> = ({ channelId }) => {
                   {editingMessage?.id !== message.id ? (
                     <>
                       <Text pt="sm" pl="54px" size="sm">
-                        {message.text}
+                        {transformNewLine(message.text)}
                         {message.created_at !== message.updated_at && (
                           <span style={{ color: "gray" }}> (編集済み)</span>
                         )}
