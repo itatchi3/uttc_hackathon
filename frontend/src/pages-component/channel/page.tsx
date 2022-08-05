@@ -111,9 +111,9 @@ export const Channel: FC<Props> = ({ channelId }) => {
     setChannelName(channel.name);
   }, [channels.data, channelId, setChannelName]);
 
-  // useEffect(() => {
-  //   scrollBottomRef?.current?.scrollIntoView();
-  // }, [messages.isFetched]);
+  useEffect(() => {
+    scrollBottomRef?.current?.scrollIntoView();
+  }, [channelId]);
 
   return messages.data !== undefined ? (
     <Stack justify="space-between">
