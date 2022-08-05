@@ -1,10 +1,4 @@
 const PATH = {
-  INDEX: "/",
-  NOTIFICATION: "/notification",
-  SETTINGS: "/settings",
-  SIGN_IN: "/auth/sign-in",
-  SIGN_UP: "/auth/sign-up",
-  FORGOT_PASSWORD: "/auth/forgot-password",
   CHANNEL: "/channel/[channelId]",
 } as const;
 
@@ -29,3 +23,6 @@ export const getPath = (pathKey: keyof typeof PATH, ...args: string[]) => {
 
   return "/" + newPath.join("/");
 };
+
+// TODO: Cloud Run上で環境変数が読み込めないので、ここで定義している
+export const BACKEND_PATH = "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app";

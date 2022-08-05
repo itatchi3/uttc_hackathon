@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+import { BACKEND_PATH } from "../const/path";
+
 /** @package */
 export type User = {
   id: number;
@@ -10,10 +12,7 @@ export type User = {
 type Users = ReadonlyArray<User>;
 
 const fetchUsers = async (): Promise<Users> => {
-  //   const response = await axios.get(process.env.NEXT_PUBLIC_API_PATH + "/User");
-  const response = await axios.get(
-    "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app/User"
-  );
+  const response = await axios.get(BACKEND_PATH + "/User");
   return response.data;
 };
 

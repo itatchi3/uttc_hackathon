@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+import { BACKEND_PATH } from "../const/path";
+
 export type Channel = {
   id: number;
   name: string;
@@ -8,13 +10,7 @@ export type Channel = {
 type Channels = ReadonlyArray<Channel>;
 
 const fetchChannels = async (): Promise<Channels> => {
-  // const response = await axios.get(
-  //   process.env.NEXT_PUBLIC_API_PATH + "/Channel"
-  // );
-
-  const response = await axios.get(
-    "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app/Channel"
-  );
+  const response = await axios.get(BACKEND_PATH + "/Channel");
 
   https: return response.data;
 };
@@ -27,13 +23,7 @@ export const useGetChannelsQuery = () => {
 };
 
 const fetchChannel = async (channelId: string): Promise<Channel> => {
-  // const response = await axios.get(
-  //   process.env.NEXT_PUBLIC_API_PATH + "/Channel/" + channelId
-  // );
-
-  const response = await axios.get(
-    "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app/Channel" + channelId
-  );
+  const response = await axios.get(BACKEND_PATH + "/Channel" + channelId);
 
   return response.data;
 };
