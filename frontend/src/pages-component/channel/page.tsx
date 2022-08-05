@@ -55,13 +55,6 @@ export const Channel: FC<Props> = ({ channelId }) => {
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // const channelName = useMemo(() => {
-  //   const channel = channels.data?.find((c: ChanelType) => {
-  //     return c.id === Number(channelId);
-  //   });
-  //   return channel?.name;
-  // }, [channelId, channels.data]);
-
   const handleClick = async () => {
     setIsLoading(true);
     await addMessage.mutateAsync({
