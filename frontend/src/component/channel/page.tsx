@@ -141,10 +141,15 @@ export const Channel: FC<Props> = ({ channelId }) => {
   }, [channelId]);
 
   return messages.data !== undefined ? (
-    <Stack justify="space-between">
+    <Stack
+      justify="space-between"
+      sx={{
+        height: "calc(100vh - 115px)",
+      }}
+    >
       <Box
         sx={{
-          height: "calc(100vh - 220px)",
+          height: "100%",
           overflowY: "scroll",
         }}
       >
