@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 type Message = {
@@ -58,8 +58,8 @@ export const useAddMessageQuery = () => {
 };
 
 /** @package */
-export const useUpdateMessageQuery = (channelId: string) => {
-  const queryClient = useQueryClient();
+export const useUpdateMessageQuery = () => {
+  //   const queryClient = useQueryClient();
 
   return useMutation(
     (newComment: {
@@ -85,18 +85,18 @@ export const useUpdateMessageQuery = (channelId: string) => {
           channel_id: newComment.channel_id,
         }
       );
-    },
-    {
-      onSuccess: () => {
-        return queryClient.invalidateQueries(["messages", channelId]);
-      },
     }
+    // {
+    //   onSuccess: () => {
+    //     return queryClient.invalidateQueries(["messages", channelId]);
+    //   },
+    // }
   );
 };
 
 /** @package */
-export const useDeleteMessageQuery = (channelId: string) => {
-  const queryClient = useQueryClient();
+export const useDeleteMessageQuery = () => {
+  //   const queryClient = useQueryClient();
 
   return useMutation(
     (messageId: number) => {
@@ -106,11 +106,11 @@ export const useDeleteMessageQuery = (channelId: string) => {
       return axios.delete(
         "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app/Message/" + messageId
       );
-    },
-    {
-      onSuccess: () => {
-        return queryClient.invalidateQueries(["messages", channelId]);
-      },
     }
+    // {
+    //   onSuccess: () => {
+    //     return queryClient.invalidateQueries(["messages", channelId]);
+    //   },
+    // }
   );
 };

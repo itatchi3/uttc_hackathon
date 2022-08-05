@@ -43,8 +43,8 @@ export const Channel: FC<Props> = ({ channelId }) => {
   const theme = useMantineTheme();
   const [text, setText] = useState("");
   const addMessage = useAddMessageQuery();
-  const updateMessage = useUpdateMessageQuery(channelId);
-  const deleteMessage = useDeleteMessageQuery(channelId);
+  const updateMessage = useUpdateMessageQuery();
+  const deleteMessage = useDeleteMessageQuery();
   const [editingMessage, setEditingMessage] = useState<{
     id: number;
     text: string;
@@ -95,7 +95,14 @@ export const Channel: FC<Props> = ({ channelId }) => {
       user_id: loginUser.id,
       channel_id: Number(channelId),
     });
+    await messages.refetch();
     setEditingMessage(null);
+  };
+
+  const handleDelete = async (id: number) => {
+    await deleteMessage.mutateAsync(id);
+    await messages.refetch();
+    setOpenedID(null);
   };
 
   useEffect(() => {
@@ -299,9 +306,8 @@ export const Channel: FC<Props> = ({ channelId }) => {
                     <Button
                       color="red"
                       size="xs"
-                      onClick={async () => {
-                        await deleteMessage.mutateAsync(message.id);
-                        setOpenedID(null);
+                      onClick={() => {
+                        handleDelete(message.id);
                       }}
                       loading={deleteMessage.isLoading}
                     >
