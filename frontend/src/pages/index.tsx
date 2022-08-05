@@ -1,5 +1,5 @@
 import type { CustomNextPage } from "next";
-import { Index } from "src/pages-component/index";
+import { Index } from "src/component/index/index";
 import { DashboardLayout } from "src/pages-layout";
 
 const IndexPage: CustomNextPage = (props) => {

@@ -1,6 +1,7 @@
 import type { CustomNextPage } from "next";
 import { useRouter } from "next/router";
-import { Channel, Loading } from "src/pages-component/channel";
+import { Loading } from "src/component";
+import { Channel } from "src/component/channel";
 import { DashboardLayout } from "src/pages-layout";
 
 const ChannelPage: CustomNextPage = (props) => {

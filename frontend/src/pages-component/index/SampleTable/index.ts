@@ -1,1 +1,0 @@
-export { SampleTable } from "./SampleTable";

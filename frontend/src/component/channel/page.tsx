@@ -30,7 +30,7 @@ import {
 import { loginUserState } from "src/lib/user";
 import { DotsVertical, Edit, Trash } from "tabler-icons-react";
 
-import { Loading } from "./loading";
+import { Loading } from "../loading";
 
 type Props = {
   channelId: string;
