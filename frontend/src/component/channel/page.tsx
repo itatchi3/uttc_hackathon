@@ -112,7 +112,16 @@ export const Channel: FC<Props> = ({ channelId }) => {
   }, [channels.data, channelId, setChannelName]);
 
   useEffect(() => {
-    scrollBottomRef?.current?.scrollIntoView();
+    const fetch = async () => {
+      scrollBottomRef?.current?.scrollIntoView(false);
+      await messages.refetch();
+      await new Promise((resolve) => {
+        setTimeout(resolve, 0);
+      });
+      scrollBottomRef?.current?.scrollIntoView(false);
+    };
+    fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelId]);
 
   return messages.data !== undefined ? (
