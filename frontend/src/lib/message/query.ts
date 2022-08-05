@@ -32,8 +32,8 @@ export const useGetMessagesQuery = (channelId: string) => {
 };
 
 /** @package */
-export const useAddMessageQuery = (channelId: string) => {
-  const queryClient = useQueryClient();
+export const useAddMessageQuery = () => {
+  //   const queryClient = useQueryClient();
 
   return useMutation(
     (newComment: { text: string; user_id: number; channel_id: number }) => {
@@ -41,12 +41,12 @@ export const useAddMessageQuery = (channelId: string) => {
         process.env.NEXT_PUBLIC_API_PATH + "/Message",
         newComment
       );
-    },
-    {
-      onSuccess: () => {
-        return queryClient.invalidateQueries(["messages", channelId]);
-      },
     }
+    // {
+    //   onSuccess: () => {
+    //     return queryClient.invalidateQueries(["messages", channelId]);
+    //   },
+    // }
   );
 };
 
