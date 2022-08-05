@@ -106,7 +106,7 @@ export const SideNav: FC<{ className?: string }> = ({ className }) => {
           <Group className={classes.header} position="apart">
             <div className={classes.logo}>
               <DeviceAnalytics />
-              <span className={classes.linkLabel}>UTTC Hackthon</span>
+              <span className={classes.linkLabel}>UTTC Hackathon</span>
             </div>
           </Group>
         }
