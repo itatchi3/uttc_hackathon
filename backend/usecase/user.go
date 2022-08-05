@@ -9,6 +9,7 @@ import (
 type UserUsecase interface {
 	Create(name, email, password, profileURL string) (*model.User, error)
 	FindByID(id uint) (*model.User, error)
+	FindAll() (*[]model.User, error)
 	Update(id uint, name, email, password, profileURL string) (*model.User, error)
 	Delete(id uint) error
 }
@@ -45,6 +46,16 @@ func (uu *userUsecase) FindByID(id uint) (*model.User, error) {
 	}
 
 	return foundUser, nil
+}
+
+// FindAll userをすべて取得するときのユースケース
+func (uu *userUsecase) FindAll() (*[]model.User, error) {
+	foundUsers, err := uu.userRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return foundUsers, nil
 }
 
 // Update userを更新するときのユースケース

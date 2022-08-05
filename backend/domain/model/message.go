@@ -12,6 +12,7 @@ type Message struct {
 
 	Text      string
 	UserID    uint
+	User      User
 	ChannelID uint
 }
 

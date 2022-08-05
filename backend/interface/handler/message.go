@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"uttc_backend/usecase"
 
@@ -13,6 +14,7 @@ import (
 type MessageHandler interface {
 	Post() echo.HandlerFunc
 	Get() echo.HandlerFunc
+	GetByChannelID() echo.HandlerFunc
 	Put() echo.HandlerFunc
 	Delete() echo.HandlerFunc
 }
@@ -33,11 +35,28 @@ type requestMessage struct {
 }
 
 type responseMessage struct {
+	ID        uint      `json:"id"`
+	Text      string    `json:"text"`
+	UserID    uint      `json:"user_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type responseGetMessage struct {
 	ID        uint   `json:"id"`
 	Text      string `json:"text"`
-	UserID    uint   `json:"user_id"`
-	ChannelID uint   `json:"channel_id"`
+	User      UserInMessagge
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type UserInMessagge struct {
+	ID         uint   `json:"id"`
+	Name       string `json:"name"`
+	ProfileURL string `json:"image_url"`
+}
+
+type responseGetMessages []responseGetMessage
 
 // Post messageを保存するときのハンドラー
 func (th *messageHandler) Post() echo.HandlerFunc {
@@ -56,7 +75,8 @@ func (th *messageHandler) Post() echo.HandlerFunc {
 			ID:        createdMessage.ID,
 			Text:      createdMessage.Text,
 			UserID:    createdMessage.UserID,
-			ChannelID: createdMessage.ChannelID,
+			CreatedAt: createdMessage.CreatedAt,
+			UpdatedAt: createdMessage.UpdatedAt,
 		}
 
 		return c.JSON(http.StatusCreated, res)
@@ -76,11 +96,50 @@ func (th *messageHandler) Get() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		res := responseMessage{
-			ID:        foundMessage.ID,
-			Text:      foundMessage.Text,
-			UserID:    foundMessage.UserID,
-			ChannelID: foundMessage.ChannelID,
+		res := responseGetMessage{
+			ID:   foundMessage.ID,
+			Text: foundMessage.Text,
+			User: UserInMessagge{
+				ID:         foundMessage.User.ID,
+				Name:       foundMessage.User.Name,
+				ProfileURL: foundMessage.User.ProfileURL,
+			},
+			CreatedAt: foundMessage.CreatedAt,
+			UpdatedAt: foundMessage.UpdatedAt,
+		}
+
+		return c.JSON(http.StatusOK, res)
+	}
+}
+
+// Get messageを取得するときのハンドラー
+func (th *messageHandler) GetByChannelID() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		channelID, err := strconv.ParseUint(c.Param("channelID"), 10, 64)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		foundMessages, err := th.messageUsecase.FindByChannelID(uint(channelID))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		var res responseGetMessages
+		// 不定長のデータ構造をつける。
+		for i := 0; i < len(*foundMessages); i++ {
+			//fmt.Println(i)
+			res = append(res, responseGetMessage{
+				ID:   (*foundMessages)[i].ID,
+				Text: (*foundMessages)[i].Text,
+				User: UserInMessagge{
+					ID:         (*foundMessages)[i].User.ID,
+					Name:       (*foundMessages)[i].User.Name,
+					ProfileURL: (*foundMessages)[i].User.ProfileURL,
+				},
+				CreatedAt: (*foundMessages)[i].CreatedAt,
+				UpdatedAt: (*foundMessages)[i].UpdatedAt,
+			})
 		}
 
 		return c.JSON(http.StatusOK, res)
@@ -106,10 +165,9 @@ func (th *messageHandler) Put() echo.HandlerFunc {
 		}
 
 		res := responseMessage{
-			ID:        updatedMessage.ID,
-			Text:      updatedMessage.Text,
-			UserID:    updatedMessage.UserID,
-			ChannelID: updatedMessage.ChannelID,
+			ID:     updatedMessage.ID,
+			Text:   updatedMessage.Text,
+			UserID: updatedMessage.UserID,
 		}
 
 		return c.JSON(http.StatusOK, res)

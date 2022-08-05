@@ -13,6 +13,7 @@ import (
 type ChannelHandler interface {
 	Post() echo.HandlerFunc
 	Get() echo.HandlerFunc
+	GetAll() echo.HandlerFunc
 	Put() echo.HandlerFunc
 	Delete() echo.HandlerFunc
 }
@@ -34,6 +35,8 @@ type responseChannel struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
+
+type responseChannels []responseChannel
 
 // Post channelを保存するときのハンドラー
 func (th *channelHandler) Post() echo.HandlerFunc {
@@ -73,6 +76,28 @@ func (th *channelHandler) Get() echo.HandlerFunc {
 		res := responseChannel{
 			ID:   foundChannel.ID,
 			Name: foundChannel.Name,
+		}
+
+		return c.JSON(http.StatusOK, res)
+	}
+}
+
+// Get channelをすべて取得するときのハンドラー
+func (th *channelHandler) GetAll() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		foundChannels, err := th.channelUsecase.FindAll()
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		var res responseChannels
+		// 不定長のデータ構造をつける。
+		for i := 0; i < len(*foundChannels); i++ {
+			//fmt.Println(i)
+			res = append(res, responseChannel{
+				ID:   (*foundChannels)[i].ID,
+				Name: (*foundChannels)[i].Name,
+			})
 		}
 
 		return c.JSON(http.StatusOK, res)

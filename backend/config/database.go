@@ -15,7 +15,7 @@ func NewDB() *gorm.DB {
 	mysqlHost := os.Getenv("MYSQL_HOST")
 	mysqlDatabase := os.Getenv("MYSQL_DATABASE")
 
-	connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPwd, mysqlHost, mysqlDatabase)
+	connStr := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", mysqlUser, mysqlPwd, mysqlHost, mysqlDatabase)
 	db, err := gorm.Open("mysql", connStr)
 
 	// db, err := gorm.Open("mysql", "user:password@tcp(hackathon_backend_db)/sample?charset=utf8mb4&parseTime=True&loc=Local")

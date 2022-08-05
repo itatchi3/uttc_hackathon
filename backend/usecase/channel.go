@@ -9,6 +9,7 @@ import (
 type ChannelUsecase interface {
 	Create(name string) (*model.Channel, error)
 	FindByID(id uint) (*model.Channel, error)
+	FindAll() (*[]model.Channel, error)
 	Update(id uint, name string) (*model.Channel, error)
 	Delete(id uint) error
 }
@@ -45,6 +46,16 @@ func (uu *channelUsecase) FindByID(id uint) (*model.Channel, error) {
 	}
 
 	return foundChannel, nil
+}
+
+// FindAll channelをすべて取得するときのユースケース
+func (uu *channelUsecase) FindAll() (*[]model.Channel, error) {
+	foundChannels, err := uu.channelRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return foundChannels, nil
 }
 
 // Update channelを更新するときのユースケース
