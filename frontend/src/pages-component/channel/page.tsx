@@ -13,9 +13,13 @@ import {
 import { IconArrowRight } from "@tabler/icons";
 import dayjs from "dayjs";
 import type { FC } from "react";
+import { useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import type { Channel as ChanelType } from "src/lib/channel";
+import { channelNameState } from "src/lib/channel";
 import { useGetChannelsQuery } from "src/lib/channel";
 import {
   useAddMessageQuery,
@@ -24,6 +28,8 @@ import {
   useUpdateMessageQuery,
 } from "src/lib/message";
 import { DotsVertical, Edit, Trash } from "tabler-icons-react";
+
+import { loginUserState } from "../../lib/user/atom";
 
 type Props = {
   channelId: string;
@@ -43,6 +49,8 @@ export const Channel: FC<Props> = ({ channelId }) => {
     text: string;
   } | null>(null);
   const [openedID, setOpenedID] = useState<number | null>(null);
+  const setChannelName = useSetRecoilState(channelNameState);
+  const loginUser = useRecoilValue(loginUserState);
 
   const channelName = useMemo(() => {
     const channel = chanels.data?.find((c: ChanelType) => {
@@ -52,7 +60,11 @@ export const Channel: FC<Props> = ({ channelId }) => {
   }, [channelId, chanels.data]);
 
   const handleClick = () => {
-    addMessage.mutate({ text, channel_id: Number(channelId), user_id: 1 });
+    addMessage.mutate({
+      text,
+      channel_id: Number(channelId),
+      user_id: loginUser.id,
+    });
     setText("");
   };
 
@@ -70,11 +82,24 @@ export const Channel: FC<Props> = ({ channelId }) => {
     updateMessage.mutate({
       id,
       text: editingMessage.text,
-      user_id: 1,
+      user_id: loginUser.id,
       channel_id: Number(channelId),
     });
     setEditingMessage(null);
   };
+
+  useEffect(() => {
+    if (!chanels.data) {
+      return;
+    }
+    const channel = chanels.data.find((c: ChanelType) => {
+      return c.id === Number(channelId);
+    });
+    if (!channel) {
+      return;
+    }
+    setChannelName(channel.name);
+  }, [chanels.data, channelId, setChannelName]);
 
   return (
     <Box sx={{ position: "relative", height: "100%" }}>
@@ -108,43 +133,45 @@ export const Channel: FC<Props> = ({ channelId }) => {
                         </Text>
                       </div>
                     </Group>
-                    <Menu
-                      size="xs"
-                      position="bottom"
-                      placement="end"
-                      transition="pop-top-right"
-                      control={
-                        <ActionIcon variant="hover" radius="xl" size={20}>
-                          <DotsVertical radius="xl" />
-                        </ActionIcon>
-                      }
-                      styles={(theme) => {
-                        return {
-                          label: { fontSize: theme.fontSizes.sm },
-                          itemLabel: { fontSize: theme.fontSizes.md },
-                        };
-                      }}
-                    >
-                      <Menu.Item
-                        icon={<Edit size={16} />}
-                        onClick={() => {
-                          return setEditingMessage({
-                            id: message.id,
-                            text: message.text,
-                          });
+                    {message.User.id === loginUser.id && (
+                      <Menu
+                        size="xs"
+                        position="bottom"
+                        placement="end"
+                        transition="pop-top-right"
+                        control={
+                          <ActionIcon variant="hover" radius="xl" size={20}>
+                            <DotsVertical radius="xl" />
+                          </ActionIcon>
+                        }
+                        styles={(theme) => {
+                          return {
+                            label: { fontSize: theme.fontSizes.sm },
+                            itemLabel: { fontSize: theme.fontSizes.md },
+                          };
                         }}
                       >
-                        編集
-                      </Menu.Item>
-                      <Menu.Item
-                        icon={<Trash size={16} />}
-                        onClick={() => {
-                          setOpenedID(message.id);
-                        }}
-                      >
-                        削除
-                      </Menu.Item>
-                    </Menu>
+                        <Menu.Item
+                          icon={<Edit size={16} />}
+                          onClick={() => {
+                            return setEditingMessage({
+                              id: message.id,
+                              text: message.text,
+                            });
+                          }}
+                        >
+                          編集
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<Trash size={16} />}
+                          onClick={() => {
+                            setOpenedID(message.id);
+                          }}
+                        >
+                          削除
+                        </Menu.Item>
+                      </Menu>
+                    )}
                   </Group>
                   {editingMessage?.id !== message.id ? (
                     <>
