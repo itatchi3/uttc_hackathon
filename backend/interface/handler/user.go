@@ -37,8 +37,6 @@ type requestUser struct {
 type responseUser struct {
 	ID         uint   `json:"id"`
 	Name       string `json:"name"`
-	Email      string `json:"email"`
-	Password   string `json:"password"`
 	ProfileURL string `json:"profile_url"`
 }
 
@@ -60,8 +58,6 @@ func (th *userHandler) Post() echo.HandlerFunc {
 		res := responseUser{
 			ID:         createdUser.ID,
 			Name:       createdUser.Name,
-			Email:      createdUser.Email,
-			Password:   createdUser.Password,
 			ProfileURL: createdUser.ProfileURL,
 		}
 
@@ -136,8 +132,6 @@ func (th *userHandler) Put() echo.HandlerFunc {
 		res := responseUser{
 			ID:         updatedUser.ID,
 			Name:       updatedUser.Name,
-			Email:      updatedUser.Email,
-			Password:   updatedUser.Password,
 			ProfileURL: updatedUser.ProfileURL,
 		}
 
