@@ -5,6 +5,8 @@ import { useRecoilState } from "recoil";
 import { channelNameState } from "src/lib/channel";
 import { loginUserState } from "src/lib/user";
 
+import { useGetUsersQuery } from "../../lib/user";
+
 /** @package */
 export const Header: FC<{ left: ReactNode }> = ({ left }) => {
   return (
@@ -67,22 +69,9 @@ const ChannelName: FC = () => {
 //   );
 // };
 
-const USER = {
-  JACK: {
-    id: 1,
-    name: "jack",
-    imageURL:
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80",
-  },
-  ITATCHI: {
-    id: 2,
-    name: "itatchi",
-    imageURL: "https://avatars.githubusercontent.com/u/72689870?v=4",
-  },
-};
-
 const UserMenu: FC = () => {
-  const [user, setUser] = useRecoilState(loginUserState);
+  const [loginUser, setLoginUser] = useRecoilState(loginUserState);
+  const users = useGetUsersQuery();
 
   return (
     <Menu
@@ -93,7 +82,7 @@ const UserMenu: FC = () => {
       control={
         <ActionIcon variant="hover" radius="xl" size={40}>
           <Avatar
-            src={user.imageURL}
+            src={loginUser.profile_url}
             // src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
             radius="xl"
           />
@@ -107,22 +96,20 @@ const UserMenu: FC = () => {
       }}
     >
       <Menu.Label>User</Menu.Label>
-      <Menu.Item
-        icon={<Avatar src={USER.ITATCHI.imageURL} radius="xl" />}
-        onClick={() => {
-          setUser(USER.ITATCHI);
-        }}
-      >
-        {USER.ITATCHI.name}
-      </Menu.Item>
-      <Menu.Item
-        icon={<Avatar src={USER.JACK.imageURL} radius="xl" />}
-        onClick={() => {
-          setUser(USER.JACK);
-        }}
-      >
-        {USER.JACK.name}
-      </Menu.Item>
+      {users.data &&
+        users.data.map((user) => {
+          return (
+            <Menu.Item
+              key={user.id}
+              icon={<Avatar src={user.profile_url} radius="xl" />}
+              onClick={() => {
+                setLoginUser(user);
+              }}
+            >
+              {user.name}
+            </Menu.Item>
+          );
+        })}
     </Menu>
   );
 };

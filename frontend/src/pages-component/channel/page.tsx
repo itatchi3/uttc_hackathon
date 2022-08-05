@@ -27,9 +27,8 @@ import {
   useGetMessagesQuery,
   useUpdateMessageQuery,
 } from "src/lib/message";
+import { loginUserState } from "src/lib/user";
 import { DotsVertical, Edit, Trash } from "tabler-icons-react";
-
-import { loginUserState } from "../../lib/user/atom";
 
 type Props = {
   channelId: string;
