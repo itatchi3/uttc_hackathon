@@ -8,10 +8,15 @@ export type Channel = {
 type Channels = ReadonlyArray<Channel>;
 
 const fetchChannels = async (): Promise<Channels> => {
+  // const response = await axios.get(
+  //   process.env.NEXT_PUBLIC_API_PATH + "/Channel"
+  // );
+
   const response = await axios.get(
-    process.env.NEXT_PUBLIC_API_PATH + "/Channel"
+    "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app/Channel"
   );
-  return response.data;
+
+  https: return response.data;
 };
 
 /** @package */
@@ -22,9 +27,14 @@ export const useGetChannelsQuery = () => {
 };
 
 const fetchChannel = async (channelId: string): Promise<Channel> => {
+  // const response = await axios.get(
+  //   process.env.NEXT_PUBLIC_API_PATH + "/Channel/" + channelId
+  // );
+
   const response = await axios.get(
-    process.env.NEXT_PUBLIC_API_PATH + "/Channel/" + channelId
+    "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app/Channel" + channelId
   );
+
   return response.data;
 };
 

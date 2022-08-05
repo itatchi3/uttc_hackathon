@@ -10,7 +10,10 @@ export type User = {
 type Users = ReadonlyArray<User>;
 
 const fetchUsers = async (): Promise<Users> => {
-  const response = await axios.get(process.env.NEXT_PUBLIC_API_PATH + "/User");
+  //   const response = await axios.get(process.env.NEXT_PUBLIC_API_PATH + "/User");
+  const response = await axios.get(
+    "https://hackathon-backend-kqkvlqlr2a-uc.a.run.app/User"
+  );
   return response.data;
 };
 
