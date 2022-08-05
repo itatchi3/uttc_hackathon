@@ -11,7 +11,6 @@ import {
   Textarea,
   useMantineTheme,
 } from "@mantine/core";
-import { IconArrowRight } from "@tabler/icons";
 import dayjs from "dayjs";
 import type { FC } from "react";
 import { useRef } from "react";
@@ -28,7 +27,14 @@ import {
   useUpdateMessageQuery,
 } from "src/lib/message";
 import { loginUserState } from "src/lib/user";
-import { DotsVertical, Edit, Trash } from "tabler-icons-react";
+import {
+  DeviceFloppy,
+  DotsVertical,
+  Edit,
+  Send,
+  Trash,
+  X,
+} from "tabler-icons-react";
 
 import { Loading } from "../loading";
 
@@ -239,6 +245,7 @@ export const Channel: FC<Props> = ({ channelId }) => {
                           onClick={() => {
                             return setEditingMessage(null);
                           }}
+                          leftIcon={<X size={14} />}
                         >
                           キャンセル
                         </Button>
@@ -253,6 +260,7 @@ export const Channel: FC<Props> = ({ channelId }) => {
                           loading={
                             updateMessage.isLoading || messages.isLoading
                           }
+                          leftIcon={<DeviceFloppy size={14} />}
                         >
                           保存する
                         </Button>
@@ -302,6 +310,7 @@ export const Channel: FC<Props> = ({ channelId }) => {
                       onClick={() => {
                         setOpenedID(null);
                       }}
+                      leftIcon={<X size={14} />}
                     >
                       キャンセル
                     </Button>
@@ -312,6 +321,7 @@ export const Channel: FC<Props> = ({ channelId }) => {
                         handleDelete(message.id);
                       }}
                       loading={deleteMessage.isLoading}
+                      leftIcon={<Trash size={14} />}
                     >
                       削除する
                     </Button>
@@ -332,7 +342,7 @@ export const Channel: FC<Props> = ({ channelId }) => {
             return setText(e.target.value);
           }}
         />
-        <Group position="right" pt="8px">
+        <Group position="right" pt="12px">
           <Button
             size="xs"
             color={theme.primaryColor}
@@ -340,8 +350,9 @@ export const Channel: FC<Props> = ({ channelId }) => {
             onClick={handleClick}
             loading={isLoading}
             disabled={!text}
+            leftIcon={<Send size={14} />}
           >
-            <IconArrowRight size={18} stroke={1.5} />
+            送信
           </Button>
         </Group>
       </Box>
